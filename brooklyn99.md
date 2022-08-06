@@ -5,6 +5,8 @@
 ---
 ## The Room
 
+![image13](https://user-images.githubusercontent.com/24508513/183258173-93372153-e233-471f-a710-a9010e8d2264.png)
+
 Brooklyn Nine-Nine is a show that is on rotation in my house regularly. So when I stumbled on a room themed around the show on THM, I had to give it a shot. The room is labeled as easy, and it was. All we are looking for is a user flag, and the root flag. 
 
 ## Enumeration
