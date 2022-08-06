@@ -1,4 +1,4 @@
-# thm - brooklyn nine nine
+# THM - Brooklyn Nine-Nine
 
 *Disclaimer - I AM NOT AN EXPERT. Not even close. If you see something in this writeup that you think was dumb, or the wrong way to do something, it probably was.I'm pretty new to all of this and this is more of a reference for me to look back on.*
 
@@ -27,7 +27,7 @@ Let's break down the flags I used:
 
 Alright, lets take a look at the results.
 
->Add image 1
+![image1](https://user-images.githubusercontent.com/24508513/183257758-f3e357b7-60a5-403d-827f-d4ffa638e470.png)
 
 It looks like we have ports 21, 22, and 80 open. 
 
@@ -37,11 +37,11 @@ It looks like SSH is also open. I'm sure this will come into play later.
 
 Port 80 is also open and it looks like it's running Apache. Let's see what this server is hosting by navigating to the IP in a web browser.
 
->Add image 2
+![image2](https://user-images.githubusercontent.com/24508513/183257770-e184e78b-eb48-4e91-8fe5-5d04f4478999.png)
 
 Interesting. Let's check the page source. 
 
->Add image 3
+![image3](https://user-images.githubusercontent.com/24508513/183257771-ac1a88ce-8e98-4079-b419-9ee29926d0a0.png)
 
 Well, I'm no FBI agent, but I would call that a significant clue. It looks like the path we are heading down is steganography. There has to be some data hidden in the image on the site. Let's download the image and see what we can pull out of it. 
 
@@ -70,7 +70,7 @@ Break-down:
 
 And here is the result:
 
->Add image 4
+![image4](https://user-images.githubusercontent.com/24508513/183257776-6c9b13ad-e17d-4725-bba4-f58b77061850.png)
 
 Well, damn. We need a passphrase. My first thought is that the passphrase might be in that file that our nmap scan picked up on the ftp server. So, let's take a look at it. 
 
@@ -96,7 +96,7 @@ It will download that file (in this case, note-to-jake.txt) to the directory tha
 
 Now we can exit the ftp server with `exit` and take a look at the contents of the note-to-jake. 
 
->Add image 5
+![image5](https://user-images.githubusercontent.com/24508513/183257784-49ddec41-2649-4694-b740-b35671c22278.png)
 
 Dead end. Maybe. Jake has a weak password. I put a pin in this when doing this box. As a last resort, I was going to come back and try to brute force ssh since Jake has a weak password, but I wanted to go back to...
 
@@ -112,17 +112,16 @@ Pretty simple. You can add another argument to specify a wordlist. I just went w
 
 The results:
 
->Add image 6
+![image6](https://user-images.githubusercontent.com/24508513/183257793-2ef1e469-1db8-4428-a05f-5da0ebbce16d.png)
 
 We have a passphrase. Time to rerun `steghide` and feed it the passphrase. The results will be written to note.txt in our present working directory, which looks like this:
 
->Add image 7
-
+![image7](https://user-images.githubusercontent.com/24508513/183257798-158e091f-2de8-4f48-8148-5486d36f8251.png)
 ###### Cheddar, you duplicitous bitch...
 
 Alright! We have Holt's password. Lets give it a shot through ssh. 
 
->Add image 8
+![image8](https://user-images.githubusercontent.com/24508513/183257805-e3b60182-d838-40c1-8fbf-157f4ebae022.png)
 
 We're in!
 
@@ -138,19 +137,19 @@ sudo -l
 
 This command lists the allowed (and forbidden) sudo commands for the invoking user on the current host. Which returns:
 
-> Add image 9
+![image9](https://user-images.githubusercontent.com/24508513/183257809-d8ae8b2f-fe1a-45cd-b457-ffdfdcf169a8.png)
 
 Interesting find! We can run nano with sudo permissions without a sudo password. Maybe we can break out of nano once we are in. Lets check [GTFOBins](https://gtfobins.github.io/) to see what we can do. Looks like we are in luck:
 
-> Add image 10
+![image10](https://user-images.githubusercontent.com/24508513/183257813-5f6018b1-ab98-4684-831d-3584125596e5.png)
 
 So it looks like we need to call nano with sudo, hit Cntl+r, then Cntl+x, and type in `reset; sh 1>&0 2>&0` in the 'Command to Execute' prompt. Lets give it a shot. 
 
-> Add image 11
+![image11](https://user-images.githubusercontent.com/24508513/183257817-ab6cd225-45f3-4d90-b88d-a2a7ce2bdb43.png)
 
 At first, I didn't think that it worked, but if you look closely, you will see an octothorpe (yes, that's what it's called) after the '0' in the prompt in nano. Hit enter a few times and you'll see that you "leave" nano. Test it out with `whoami` and you'll find that you are root. 
 
-> Add image 12
+![image12](https://user-images.githubusercontent.com/24508513/183257820-3c6a86d8-c18c-4802-bcf9-eabda2c42a3e.png)
 
 We can stabilize the shell with a python one-liner:
 
